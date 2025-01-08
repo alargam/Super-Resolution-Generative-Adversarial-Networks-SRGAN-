@@ -1,75 +1,149 @@
-# Swift SRGAN Project
+# Swift SRGAN for Image Super-Resolution
 
-This project implements a Swift SRGAN (Super-Resolution Generative Adversarial Network) for image super-resolution. The goal is to enhance the resolution of low-resolution images using deep learning techniques. The project is structured into several Python files, each handling a specific part of the pipeline, from data preparation to model training and evaluation.
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0.0-orange)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.21.0-red)
+![License](https://img.shields.io/badge/License-MIT-green)
+
+This repository contains the implementation of a **Swift SRGAN (Super-Resolution Generative Adversarial Network)** for image super-resolution. The goal of this project is to enhance the resolution and quality of low-resolution images using deep learning techniques. The model is trained to generate high-resolution images from low-resolution inputs, making it useful for applications such as medical imaging, satellite imagery, and more.
+
+---
+
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [Project Structure](#project-structure)
+3. [Installation](#installation)
+4. [Usage](#usage)
+5. [Results](#results)
+6. [Contributing](#contributing)
+7. [License](#license)
+8. [Acknowledgements](#acknowledgements)
+
+---
+
+## Introduction
+
+Super-Resolution Generative Adversarial Networks (SRGANs) are a class of deep learning models designed to enhance the resolution of images. This project implements a **Swift SRGAN** model, which is optimized for faster training and inference while maintaining high-quality results. The model is trained using a combination of adversarial loss, perceptual loss, and total variation loss to ensure that the generated images are both sharp and realistic.
+
+### Key Features:
+- **Swift SRGAN Architecture**: A lightweight and efficient GAN architecture for image super-resolution.
+- **Custom Loss Functions**: Combines adversarial loss, perceptual loss, and total variation loss for better image quality.
+- **Streamlit Web App**: An interactive web interface to test the model on sample images or your own images.
+- **Pre-trained Models**: Includes pre-trained models for quick inference.
+
+---
 
 ## Project Structure
 
-The project consists of the following files:
+The project is organized as follows:
+Swift-SRGAN/
+├── config.py # Configuration settings for the Streamlit app
+├── custom_loss.py # Custom loss functions for the SRGAN model
+├── make_dataset.py # Script to download and extract the dataset
+├── model_architecture.py # Defines the generator and discriminator architectures
+├── model_metrics.py # Implements SSIM for evaluating image quality
+├── prepare_data.py # Prepares the dataset for training and validation
+├── requirements.txt # Lists all Python dependencies
+├── split_data.py # Splits the dataset into training and validation sets
+├── streamlit_app.py # Main Streamlit application file
+└── train_model.py # Script to train the SRGAN model
 
-1. **custom_loss.py**: Defines the custom loss functions used for training the generator and discriminator in the SRGAN model.
-2. **make_dataset.py**: Handles the downloading and extraction of the dataset.
-3. **model_architecture.py**: Contains the architecture definitions for the generator and discriminator models.
-4. **model_metrics.py**: Implements the Structural Similarity Index (SSIM) metric for evaluating the quality of super-resolved images.
-5. **prepare_data.py**: Prepares the dataset by applying transformations and creating data loaders for training and validation.
-6. **requirements.txt**: Lists the Python dependencies required to run the project.
-7. **split_data.py**: Splits the dataset into training and validation sets.
-8. **train_model.py**: Contains the main training loop for the SRGAN model, including checkpointing and evaluation.
-9. **config.py**: Contains configuration settings for the Streamlit app, including page names and sample image paths.
-10. **streamlit_app.py**: The main Streamlit application file that handles the UI and user interactions.
+Copy
 
-## File Descriptions
+---
 
-### 1. custom_loss.py
-This file defines the custom loss functions used in the SRGAN model:
-- **GeneratorLoss**: Combines adversarial loss, perceptual loss, naive image loss, and total variation (TV) loss to train the generator.
-- **TVLoss**: Implements the total variation loss, which encourages smoothness in the generated images.
+## Installation
 
-### 2. make_dataset.py
-This script handles the downloading and extraction of the dataset from a zip file. It checks if the zip file exists and extracts it to the specified directory.
+To set up the project, follow these steps:
 
-### 3. model_architecture.py
-This file defines the architecture of the SRGAN model:
-- **SeperableConv2d**: Implements a depthwise separable convolutional layer.
-- **ConvBlock**: Defines a convolutional block with optional batch normalization and activation.
-- **UpsampleBlock**: Implements an upsampling block using pixel shuffle.
-- **ResidualBlock**: Defines a residual block with two convolutional layers.
-- **Generator**: The generator network that takes a low-resolution image and outputs a high-resolution image.
-- **Discriminator**: The discriminator network that distinguishes between real and generated high-resolution images.
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/your-username/Swift-SRGAN.git
+   cd Swift-SRGAN
+Install dependencies:
 
-### 4. model_metrics.py
-This file implements the Structural Similarity Index (SSIM) metric, which is used to evaluate the quality of the super-resolved images. SSIM measures the similarity between two images based on luminance, contrast, and structure.
+bash
+Copy
+pip install -r requirements.txt
+Download the dataset:
 
-### 5. prepare_data.py
-This script prepares the dataset for training and validation:
-- **TrainDataset**: Loads and transforms the training dataset.
-- **ValDataset**: Loads and transforms the validation dataset.
-- **train_hr_transform** and **train_lr_transform**: Define the transformations applied to high-resolution and low-resolution images, respectively.
+Place your dataset in the appropriate directory or use the script in make_dataset.py to download and extract it.
 
-### 6. requirements.txt
-This file lists the Python dependencies required to run the project, including libraries like `torch`, `torchvision`, `Pillow`, and `tqdm`.
+Train the model:
 
-### 7. split_data.py
-This script splits the dataset into training and validation sets. It shuffles the dataset and saves the split indices into pickle files.
+Run the training script:
 
-### 8. train_model.py
-This file contains the main training loop for the SRGAN model:
-- **save_checkpoint**: Saves the model state and training metrics to a checkpoint file.
-- **load_checkpoint**: Loads the model state and training metrics from a checkpoint file.
-- **run_pipeline**: Initializes the models, loss functions, and optimizers, and runs the training loop. It also handles validation, checkpointing, and early stopping.
-
-### 9. config.py
-This file contains configuration settings for the Streamlit app:
-- **PAGES**: A list of page names for the Streamlit sidebar.
-- **SAMPLE_IMAGES**: A list of sample image paths that can be used in the app.
-
-### 10. streamlit_app.py
-This is the main Streamlit application file:
-- **load_data()**: Loads sample images and initializes the model for inference.
-- **run_UI()**: Displays the UI based on the selected page, including the home page, image enhancer examples, and the option to try your own image.
-
-## Usage
-
-To train the SRGAN model, run the following command:
-
-```bash
+bash
+Copy
 python train_model.py --upscale_factor 4 --num_epochs 100 --batch_size 32
+Run the Streamlit app:
+
+Start the Streamlit app to interact with the model:
+
+bash
+Copy
+streamlit run streamlit_app.py
+Usage
+Training the Model
+To train the SRGAN model, use the following command:
+
+bash
+Copy
+python train_model.py --upscale_factor 4 --num_epochs 100 --batch_size 32
+--upscale_factor: The factor by which the image resolution will be increased (default: 4).
+
+--num_epochs: The number of epochs to train the model (default: 100).
+
+--batch_size: The batch size for training (default: 32).
+
+Using the Streamlit App
+The Streamlit app provides an interactive interface to test the model. You can:
+
+View examples of image enhancement.
+
+Upload your own images to see the super-resolution results.
+
+Explore technical details about the model.
+
+To run the app:
+
+bash
+Copy
+streamlit run streamlit_app.py
+Results
+Sample Outputs
+Here are some examples of low-resolution images and their corresponding super-resolved versions generated by the Swift SRGAN model:
+
+Low-Resolution Image	Super-Resolution Image
+LR Image 1	SR Image 1
+LR Image 2	SR Image 2
+Evaluation Metrics
+The model is evaluated using the following metrics:
+
+PSNR (Peak Signal-to-Noise Ratio): Measures the quality of the generated images.
+
+SSIM (Structural Similarity Index): Evaluates the structural similarity between the generated and ground truth images.
+
+Contributing
+Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
+
+Fork the repository.
+
+Create a new branch for your feature or bug fix.
+
+Commit your changes.
+
+Submit a pull request.
+
+Please ensure that your code follows the project's coding standards and includes appropriate documentation.
+
+License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+Acknowledgements
+This project is inspired by the original SRGAN paper: Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network.
+
+Special thanks to the PyTorch and Streamlit communities for their excellent tools and libraries.
+
+The sample images used in this project are for demonstration purposes only.
