@@ -1,7 +1,9 @@
 # Super Resolution for Images
-> #### Final Project_
+## Final Project
 
+**NOTE: You can find all source of project in this link: https://drive.google.com/drive/folders/1vSF5BglgdOLjfS6ayY6pwBXoUX7sTf0S?usp=sharing**
 
+---
 ## Project Description ⭐  
 The application of `Generative Adversarial Networks`(GANs) in Computer Vision and Deep Learning has always fascinated me. Among the many real-world applications of GANs, `Image Inpainting` stands out, as it involves filling in missing or corrupted parts of an image using information from nearby areas. One of the most crucial appliations of image inpainting is `Super-resolution` which is the process of recovering and reconstructing the resolution of a noisy low-quality image into a very high-quality, high-resolution image. 
 
@@ -57,7 +59,7 @@ This would create two files in the directory called `train_images.pkl` and `val_
 &nbsp;
 ## Deep Learning Model Architecture 🧨  
 I have implemented the original [Swift-SRGAN](https://arxiv.org/pdf/2111.14320.pdf) model architecture to enhance the resolution of low-quality X-ray images. The authors trained the original Swift-SRGAN on [DIV2K](https://data.vision.ee.ethz.ch/cvl/DIV2K/) dataset and the Flickr2K dataset. The Generative network was trained on a proposed dataset. Given an input image of size 256 x 256, the `Generator` generates a super-resolution image of size 1024 x 1024. The generated super resolution images are evaluated against the original high resolution images available in the dataset by the `Discriminator`.  
->![img.png](assets/network_architecture.png)  
+>![img.png](network_architecture.png)  
 
 <br>  
 
@@ -78,7 +80,7 @@ The GAN model was evaluated and compared against ground truths using different m
 - Similarly, SSIM lies between -1 and 1 and a higher SSIM score indicates a higher similarity between the two images structurally. 
 - Compared to PSNR, SSIM is often considered a more perceptually accurate metric, as it takes into account the human visual system's sensitivity to changes in luminance, contrast, and structure.
 
-The model was trained on TP4 IN Colab with a batch size of 2. Following are the metrics obtained after training the models on full dataset for 7 epochs:  
+The model was trained on T4 In Colab with a batch size of 2. Following are the metrics obtained after training the models on full dataset for 7 epochs:  
 
             
 | Metric                              |       7 Epochs (DL)       | 
@@ -90,20 +92,16 @@ The model was trained on TP4 IN Colab with a batch size of 2. Following are the 
 &nbsp;
 ### Following are the steps to run the model training code:
 
-**1. Activate conda environment:** 
-```
-conda activate image_super_res
-```
-**2. To train the model using python script** 
-- You can train a model direcltly by runnning the driver python script : `scripts/train_model.py`
+**1. To train the model using python script**
+- You can train a model direcltly by runnning the driver python script : `train_model.py`
 - You can pass `batch_size`, `num_epochs`, `upscale_factor` as arguments
 - You will need a GPU to train the model
 ```
-python ./scripts/train_model.py  --upscale_factor 4 --num_epochs 100 --batch_size 2
+python train_model.py  --upscale_factor 4 --num_epochs 100 --batch_size 2
 ```
 **5. Model checkpoints and results** 
-- The trained genertor and Discriminator are saved to `./models/` directory after every epoch. The save format is `netG_{UPSCALE_FACTOR}x_epoch{epoch}.pth.tar`
-- The metrics results are saved a csv to the `./logs/` folder with the filename `metrics_{epoch}_train_results.csv`  
+- The trained genertor and Discriminator are saved to `/model/` directory after every epoch. The save format is `netG_{UPSCALE_FACTOR}x_epoch{epoch}.pth.tar`
+- The metrics results are saved a csv to the `/logs/` folder with the filename `metrics_{epoch}_train_results.csv`  
   
 
 &nbsp;
@@ -139,13 +137,13 @@ It measures the variation or changes in intensity or color between adjacent pixe
 The project data and codes are arranged in the following manner:
 
 ```
-├── assets                              <- directory for repository image assets
+├── Image                               <- directory for repository image
 ├── data                                <- directory for project data
+├── code                                <- directory for data processing and model training scripts
     ├── train_images.pkl                <- list of image paths used for training the model
     ├── val_images.pkl                  <- list of image paths for testing the model
-├── scripts                             <- directory for data processing and model training scripts
     ├── custom_loss.py                  <- script to compute custom loss for generator model
-    ├── make_dataset.py                 <- script to donwaload the dataset from kaggle
+    ├── make_dataset.py                 <- script to donwaload the dataset
     ├── model_architecture.py           <- script to define the generator and discriminator model architecture
     ├── model_metrics.py                <- script to calculate metrics 
     ├── prepare_data.py                 <- script to preprocess data and create train and val data loaders
@@ -154,6 +152,3 @@ The project data and codes are arranged in the following manner:
 ├── README.md                           <- description of project and how to set up and run it
 ├── requirements.txt                    <- requirements file to document dependencies
 ```  
-
-
-
