@@ -1,7 +1,7 @@
 # Super Resolution for Images
 ## Final Project
 
-**NOTE: You can find all source of project in this link: https://drive.google.com/drive/folders/1vSF5BglgdOLjfS6ayY6pwBXoUX7sTf0S?usp=sharing**
+**NOTE: You can find all source of project in this link:** https://drive.google.com/drive/folders/1vSF5BglgdOLjfS6ayY6pwBXoUX7sTf0S?usp=sharing
 
 ---
 ## Project Description ⭐  
