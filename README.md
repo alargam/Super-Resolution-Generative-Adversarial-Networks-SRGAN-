@@ -1,149 +1,167 @@
-# Swift SRGAN for Image Super-Resolution
+# Super Resolution for Images
+> #### Final Project_
 
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.0.0-orange)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.21.0-red)
-![License](https://img.shields.io/badge/License-MIT-green)
 
-This repository contains the implementation of a **Swift SRGAN (Super-Resolution Generative Adversarial Network)** for image super-resolution. The goal of this project is to enhance the resolution and quality of low-resolution images using deep learning techniques. The model is trained to generate high-resolution images from low-resolution inputs, making it useful for applications such as medical imaging, satellite imagery, and more.
+## Project Description ⭐  
+The application of `Generative Adversarial Networks`(GANs) in Computer Vision and Deep Learning has always fascinated me. Among the many real-world applications of GANs, `Image Inpainting` stands out, as it involves filling in missing or corrupted parts of an image using information from nearby areas. One of the most crucial appliations of image inpainting is `Super-resolution` which is the process of recovering and reconstructing the resolution of a noisy low-quality image into a very high-quality, high-resolution image. 
 
----
+There are many state-of-the-art architectures that have been developed previously for the purpose of super-resolution. and `SRGAN`  is one of the earliest GANs that was developed for the super-resolution, and even though this performs very well, the main issue with this was it is highly compute intensive and slow. An improved version of the SRGAN called `SWIFT-SRGAN` was published in 2021. It focuses on improving the latency of the previous models for image super-resolution by reducing the computation size and introducing Depth-wise Separable Convolutions. This approach enables up-scaling low-resolution images into high-resolution images in real-time and with high efficiency, even on low-end computing devices, without compromising the clarity of the content.
 
-## Table of Contents
+The `Aim` of this project is to train and understand the working of SRGAN and Swift-SRGAN models on my proposed dataset. I will be downscaling high quality images from the dataset to generate low-resolution images (256x256). Then the generator will train to produce high-quality upscaled images (1024x1024), and these generated images will be compared against the original ground truths by the discriminator.  
 
-1. [Introduction](#introduction)
-2. [Project Structure](#project-structure)
-3. [Installation](#installation)
-4. [Usage](#usage)
-5. [Results](#results)
-6. [Contributing](#contributing)
-7. [License](#license)
-8. [Acknowledgements](#acknowledgements)
+&nbsp;  
+**_Sample Results_**  
+<table >
+    <tr >
+        <td><center>Low Resolution Input (256x256)</center></td>
+        <td><center>Super Resolution Output (1024x1024)</center></td>
+        <td><center>Orignal High Resolution (1024x1024)</center></td>
+    </tr>
+    <tr>
+    	<td>
+    		<center><img src="./assets/sample_lr_input.png" height="300"></center>
+    	</td>
+    	<td>
+    		<center><img src="./assets/sample_sr_output.png"  height="300"></center>
+    	</td>
+        <td>
+        	<center><img src="./assets/sample_hr_input.png"  height="300"></center>
+        </td>
+    </tr>
+</table>
 
----
 
-## Introduction
 
-Super-Resolution Generative Adversarial Networks (SRGANs) are a class of deep learning models designed to enhance the resolution of images. This project implements a **Swift SRGAN** model, which is optimized for faster training and inference while maintaining high-quality results. The model is trained using a combination of adversarial loss, perceptual loss, and total variation loss to ensure that the generated images are both sharp and realistic.
+&nbsp;
+## Data Sourcing & Processing   
+For this project the Dataset used to train the Super Resolution model from Unsplash and pixel.
+ 
+The original images have a high resolution of 1024 x 1024. To prepare this dataset for training a super resolution GAN, I downsampled the orignal high resolution images to 256 x 256 (one fourth) using BICUBIC interpolation from the PIL module. The downsampled images are served as an input to the generator architecture which then tries to generate a super resolution image which is as close as possible to the original higher resolution images. The data preprocessing script `scripts/prepare_data.py` is a part of the custom Train and Val data loader classes and is run automatically during the model training part. The data can be donwloaded using a script `scripts/make_dataset.py` and split into train and validation datasets using `scripts/split_dataset.py`. The scripts can be run as follows:
 
-### Key Features:
-- **Swift SRGAN Architecture**: A lightweight and efficient GAN architecture for image super-resolution.
-- **Custom Loss Functions**: Combines adversarial loss, perceptual loss, and total variation loss for better image quality.
-- **Streamlit Web App**: An interactive web interface to test the model on sample images or your own images.
-- **Pre-trained Models**: Includes pre-trained models for quick inference.
+**Note**: Place your dataset in the appropriate directory on make_dataset.py.
 
----
+**1. Create a new conda environment and activate it:** 
+```
+git clone https://github.com/alargam/Super-Resolution-Generative-Adversarial-Networks-SRGAN-.git
+   cd Super-Resolution-Generative-Adversarial-Networks-SRGAN-
+```
+**2. Install python package requirements:** 
+```
+pip install -r requirements.txt 
+```
+**3. Run the data downloading script:** 
+```
+python ./scripts/make_dataset.py
+```
+Running this script would prompt you to type your kaggle username and token key (from profile settings) in the terminal. Following that the data would be donwloaded and available in the `./data/` directory.
 
-## Project Structure
+**4. Split the dataset into train and validation:** 
+```
+python ./scripts/split_dataset.py
+```
+This would create two files in the `./data/` directory called `train_images.pkl` and `val_images.pkl` which would store the paths to train and validation split of images  
 
-The project is organized as follows:
-Swift-SRGAN/
-├── config.py # Configuration settings for the Streamlit app
-├── custom_loss.py # Custom loss functions for the SRGAN model
-├── make_dataset.py # Script to download and extract the dataset
-├── model_architecture.py # Defines the generator and discriminator architectures
-├── model_metrics.py # Implements SSIM for evaluating image quality
-├── prepare_data.py # Prepares the dataset for training and validation
-├── requirements.txt # Lists all Python dependencies
-├── split_data.py # Splits the dataset into training and validation sets
-├── streamlit_app.py # Main Streamlit application file
-└── train_model.py # Script to train the SRGAN model
 
-Copy
+&nbsp;
+## Deep Learning Model Architecture 🧨  
+I have implemented the original [Swift-SRGAN](https://arxiv.org/pdf/2111.14320.pdf) model architecture to enhance the resolution of low-quality X-ray images. The authors trained the original Swift-SRGAN on [DIV2K](https://data.vision.ee.ethz.ch/cvl/DIV2K/) dataset and the Flickr2K dataset. The Generative network was trained on a proposed dataset. Given an input image of size 256 x 256, the `Generator` generates a super-resolution image of size 1024 x 1024. The generated super resolution images are evaluated against the original high resolution images available in the dataset by the `Discriminator`.  
+>![img.png](assets/network_architecture.png)  
 
----
+<br>  
 
-## Installation
+**_Generator Architecture_**  
+The generator consists of Depthwise Separable Convolutional layers, which are used to reduce the number of parameters and computation in the network. The major part of network is created of 16 residual blocks. Each block has a Depthwise Convolution followed by Batch Normalization, PReLU activation, another Depthwise Convolution, and Batch Normalizationa and finally a skip connection. After the residual blocks, the images is passsed thourgh upsample blocks and finally thourgh a convolution layer to generate the final output image.
 
-To set up the project, follow these steps:
+<br>  
+ 
+**_Discriminator Architecture_**  
+The discriminator consists of 8 Depthwise Separable Convolutional blocks. Each block has a Depthwise Convolution followed by Batch Normalization and LeakyReLU activation. After the 8 blocks the images is passed through Avg Pooling and a fully connected layer to generate the final output. The objective of the discriminator is to classify super-resolution images generated by the geenrator as fake and original high-resolution images as real.  
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/your-username/Swift-SRGAN.git
-   cd Swift-SRGAN
-Install dependencies:
 
-bash
-Copy
-pip install -r requirements.txt
-Download the dataset:
+&nbsp;
+## Model Training and Evaluation 🚂  
 
-Place your dataset in the appropriate directory or use the script in make_dataset.py to download and extract it.
+The GAN model was evaluated and compared against ground truths using different metrics like Peak Signal to Noise Ratio (PSNR) and Structural Similarity Index (SSIM). 
+- The PSNR is calculated by comparing the original signal to the processed signal, and it is expressed in decibels (dB). The higher the PSNR value, the less distortion or loss of information there is in the processed signal compared to the original signal.
+- Similarly, SSIM lies between -1 and 1 and a higher SSIM score indicates a higher similarity between the two images structurally. 
+- Compared to PSNR, SSIM is often considered a more perceptually accurate metric, as it takes into account the human visual system's sensitivity to changes in luminance, contrast, and structure.
 
-Train the model:
+The model was trained on TP4 IN Colab with a batch size of 2. Following are the metrics obtained after training the models on full dataset for 7 epochs:  
 
-Run the training script:
+            
+| Metric                              |       7 Epochs (DL)       | 
+| ----------------------------------- | :-----------------------: |
+| Peak Signal to Noise Ratio (PSNR)   |         36.1 (dB)         | 
+| Structural Similarity Index (SSIM)  |            0.96           |
+  
 
-bash
-Copy
-python train_model.py --upscale_factor 4 --num_epochs 100 --batch_size 32
-Run the Streamlit app:
+&nbsp;
+### Following are the steps to run the model training code:
 
-Start the Streamlit app to interact with the model:
+**1. Activate conda environment:** 
+```
+conda activate image_super_res
+```
+**2. To train the model using python script** 
+- You can train a model direcltly by runnning the driver python script : `scripts/train_model.py`
+- You can pass `batch_size`, `num_epochs`, `upscale_factor` as arguments
+- You will need a GPU to train the model
+```
+python ./scripts/train_model.py  --upscale_factor 4 --num_epochs 100 --batch_size 2
+```
+**5. Model checkpoints and results** 
+- The trained genertor and Discriminator are saved to `./models/` directory after every epoch. The save format is `netG_{UPSCALE_FACTOR}x_epoch{epoch}.pth.tar`
+- The metrics results are saved a csv to the `./logs/` folder with the filename `metrics_{epoch}_train_results.csv`  
+  
 
-bash
-Copy
-streamlit run streamlit_app.py
-Usage
-Training the Model
-To train the SRGAN model, use the following command:
+&nbsp;
+## Custom Loss Function 🎯  
+I have used the same loss function mentioned by the authors of the Swift-SRGAN or SRGAN paper. The loss function for the Generator is a combination of multiple losses, each weighted and added together. The most crucial loss is the Perceptual Loss which is a combination of Adversarial Loss and Content Loss.
+&nbsp;  
+```
+Total_Loss = Image_Loss + Perception_Loss + TV_Loss
+```
+```
+Perceptual_Loss = Adversarial_Loss + Content_Loss
+```  
 
-bash
-Copy
-python train_model.py --upscale_factor 4 --num_epochs 100 --batch_size 32
---upscale_factor: The factor by which the image resolution will be increased (default: 4).
+&nbsp;  
+**_Loss 1: Image Loss_**  
+This is a naive loss functionn whihc calculates the Mean Squared Error b/w the generated image and the original high res image pixels.  
+  
+&nbsp;  
+**_Loss 2: Content Loss_**  
+It represents the information that is lost or distorted during the processing of an image. The image generated by the generator and the original high res image are passed though the MobileNetV2 network to compute the feature vectors of both the images. Content loss is calculated as the euclidean distance b/w the feature vectors of the original image and the generated image.  
+  
+&nbsp;  
+**_Loss 3:  Adversarial Loss_**  
+It is used to train the generator network by providing a signal on how to improve the quality of the generated images. This is calculated based on the discriminator's output, which indicates how well it can distinguish between the real and fake images. Generator tries to minimize this loss, by trying to generate images that the discriminator cannot distinguish.  
+  
+&nbsp;  
+**_Loss 4:  Total Variation loss_**  
+It measures the variation or changes in intensity or color between adjacent pixels in an image. It is defined as the sum of the absolute differences between neighboring pixels in both the horizontal and vertical directions in an image.  
+  
 
---num_epochs: The number of epochs to train the model (default: 100).
+&nbsp;  
+## Project Structure 🧬  
+The project data and codes are arranged in the following manner:
 
---batch_size: The batch size for training (default: 32).
+```
+├── assets                              <- directory for repository image assets
+├── data                                <- directory for project data
+    ├── train_images.pkl                <- list of image paths used for training the model
+    ├── val_images.pkl                  <- list of image paths for testing the model
+├── scripts                             <- directory for data processing and model training scripts
+    ├── custom_loss.py                  <- script to compute custom loss for generator model
+    ├── make_dataset.py                 <- script to donwaload the dataset from kaggle
+    ├── model_architecture.py           <- script to define the generator and discriminator model architecture
+    ├── model_metrics.py                <- script to calculate metrics 
+    ├── prepare_data.py                 <- script to preprocess data and create train and val data loaders
+    ├── split_data.py                   <- script to split the dataset images into train and validation
+    ├── train_model.py                  <- script to train the models
+├── README.md                           <- description of project and how to set up and run it
+├── requirements.txt                    <- requirements file to document dependencies
+```  
 
-Using the Streamlit App
-The Streamlit app provides an interactive interface to test the model. You can:
 
-View examples of image enhancement.
 
-Upload your own images to see the super-resolution results.
-
-Explore technical details about the model.
-
-To run the app:
-
-bash
-Copy
-streamlit run streamlit_app.py
-Results
-Sample Outputs
-Here are some examples of low-resolution images and their corresponding super-resolved versions generated by the Swift SRGAN model:
-
-Low-Resolution Image	Super-Resolution Image
-LR Image 1	SR Image 1
-LR Image 2	SR Image 2
-Evaluation Metrics
-The model is evaluated using the following metrics:
-
-PSNR (Peak Signal-to-Noise Ratio): Measures the quality of the generated images.
-
-SSIM (Structural Similarity Index): Evaluates the structural similarity between the generated and ground truth images.
-
-Contributing
-Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
-
-Fork the repository.
-
-Create a new branch for your feature or bug fix.
-
-Commit your changes.
-
-Submit a pull request.
-
-Please ensure that your code follows the project's coding standards and includes appropriate documentation.
-
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-Acknowledgements
-This project is inspired by the original SRGAN paper: Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network.
-
-Special thanks to the PyTorch and Streamlit communities for their excellent tools and libraries.
-
-The sample images used in this project are for demonstration purposes only.
