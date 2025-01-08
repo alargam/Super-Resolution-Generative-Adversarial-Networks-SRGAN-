@@ -25,7 +25,7 @@ The `Aim` of this project is to train and understand the working of SRGAN and Sw
     		<center><img src="./assets/sample_sr_output.png"  height="300"></center>
     	</td>
         <td>
-        	<center><img src="./assets/sample_hr_input.png"  height="300"></center>
+        	<center><img src="1024.png"  height="300"></center>
         </td>
     </tr>
 </table>
