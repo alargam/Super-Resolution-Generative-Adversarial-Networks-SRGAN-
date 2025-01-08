@@ -30,7 +30,7 @@ The `Aim` of this project is to train and understand the working of SRGAN and Sw
 ## Data Sourcing & Processing   
 For this project the Dataset used to train the Super Resolution model from Unsplash and pixel.
  
-The original images have a high resolution of 1024 x 1024. To prepare this dataset for training a super resolution GAN, I downsampled the orignal high resolution images to 256 x 256 (one fourth) using BICUBIC interpolation from the PIL module. The downsampled images are served as an input to the generator architecture which then tries to generate a super resolution image which is as close as possible to the original higher resolution images. The data preprocessing script `scripts/prepare_data.py` is a part of the custom Train and Val data loader classes and is run automatically during the model training part. The data can be donwloaded using a script `scripts/make_dataset.py` and split into train and validation datasets using `scripts/split_dataset.py`. The scripts can be run as follows:
+The original images have a high resolution of 1024 x 1024. To prepare this dataset for training a super resolution GAN, I downsampled the orignal high resolution images to 256 x 256 (one fourth) using BICUBIC interpolation from the PIL module. The downsampled images are served as an input to the generator architecture which then tries to generate a super resolution image which is as close as possible to the original higher resolution images. The data preprocessing script `prepare_data.py` is a part of the custom Train and Val data loader classes and is run automatically during the model training part. The data can be donwloaded using a script `make_dataset.py` and split into train and validation datasets using `split_dataset.py`. The scripts can be run as follows:
 
 **Note**: Place your dataset in the appropriate directory on make_dataset.py.
 
@@ -45,15 +45,13 @@ pip install -r requirements.txt
 ```
 **3. Run the data downloading script:** 
 ```
-python ./scripts/make_dataset.py
+python make_dataset.py
 ```
-Running this script would prompt you to type your kaggle username and token key (from profile settings) in the terminal. Following that the data would be donwloaded and available in the `./data/` directory.
-
 **4. Split the dataset into train and validation:** 
 ```
-python ./scripts/split_dataset.py
+python split_dataset.py
 ```
-This would create two files in the `./data/` directory called `train_images.pkl` and `val_images.pkl` which would store the paths to train and validation split of images  
+This would create two files in the directory called `train_images.pkl` and `val_images.pkl` which would store the paths to train and validation split of images  
 
 
 &nbsp;
