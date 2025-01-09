@@ -30,7 +30,7 @@ The `Aim` of this project is to train and understand the working of SRGAN and Sw
 
 &nbsp;
 ## Data Sourcing & Processing   
-For this project the Dataset used to train the Super Resolution model from Unsplash and pixel.
+For this project the Dataset used to train the Super Resolution model from Unsplash and pexels.
  
 The original images have a high resolution of 1024 x 1024. To prepare this dataset for training a super resolution GAN, I downsampled the orignal high resolution images to 256 x 256 (one fourth) using BICUBIC interpolation from the PIL module. The downsampled images are served as an input to the generator architecture which then tries to generate a super resolution image which is as close as possible to the original higher resolution images. The data preprocessing script `prepare_data.py` is a part of the custom Train and Val data loader classes and is run automatically during the model training part. The data can be donwloaded using a script `make_dataset.py` and split into train and validation datasets using `split_dataset.py`. The scripts can be run as follows:
 
