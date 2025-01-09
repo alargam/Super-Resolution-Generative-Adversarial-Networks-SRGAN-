@@ -97,7 +97,7 @@ The model was trained on T4 In Colab with a batch size of 2. Following are the m
 - You can pass `batch_size`, `num_epochs`, `upscale_factor` as arguments
 - You will need a GPU to train the model
 ```
-python train_model.py  --upscale_factor 4 --num_epochs 100 --batch_size 2
+python train_model.py  --upscale_factor 4 --num_epochs 10 --batch_size 2
 ```
 **5. Model checkpoints and results** 
 - The trained genertor and Discriminator are saved to `/model/` directory after every epoch. The save format is `netG_{UPSCALE_FACTOR}x_epoch{epoch}.pth.tar`
