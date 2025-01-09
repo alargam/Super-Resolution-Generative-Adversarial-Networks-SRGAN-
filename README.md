@@ -53,7 +53,7 @@ python make_dataset.py
 ```
 python split_dataset.py
 ```
-This would create two files in the directory called `train_images.pkl` and `val_images.pkl` which would store the paths to train and validation split of images  
+This would create two files called `train_images.pkl` and `val_images.pkl` which would store the paths to train and validation split of images  
 
 
 &nbsp;
