@@ -86,7 +86,7 @@ The model was trained on T4 In Colab with a batch size of 2. Following are the m
 | Metric                              |       7 Epochs (DL)       | 
 | ----------------------------------- | :-----------------------: |
 | Peak Signal to Noise Ratio (PSNR)   |         36.1 (dB)         | 
-| Structural Similarity Index (SSIM)  |            0.96           |
+| Structural Similarity Index (SSIM)  |            0.81           |
   
 
 &nbsp;
