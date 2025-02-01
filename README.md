@@ -1,7 +1,7 @@
 # Super Resolution for Images
 ## Final Project
 
-**NOTE: You can find all source of project in this link:** https://drive.google.com/drive/folders/1vSF5BglgdOLjfS6ayY6pwBXoUX7sTf0S?usp=sharing
+NOTE: You can find all source of project in this link:** https://drive.google.com/drive/folders/1vSF5BglgdOLjfS6ayY6pwBXoUX7sTf0S?usp=sharing
 ---
 ## Project Description ⭐  
 The application of `Generative Adversarial Networks`(GANs) in Computer Vision and Deep Learning has always fascinated me. Among the many real-world applications of GANs, `Image Inpainting` stands out, as it involves filling in missing or corrupted parts of an image using information from nearby areas. One of the most crucial appliations of image inpainting is `Super-resolution` which is the process of recovering and reconstructing the resolution of a noisy low-quality image into a very high-quality, high-resolution image. 
